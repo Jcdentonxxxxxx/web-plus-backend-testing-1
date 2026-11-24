@@ -1,4 +1,5 @@
 import { Post, PostsService } from './posts.service';
+import {afterEach, beforeEach, describe, expect, it} from '@jest/globals';
 
 describe('PostsService', () => {
   let postsService: PostsService;
@@ -13,10 +14,23 @@ describe('PostsService', () => {
   });
 
   it('should add a new post', () => {
-    // реализуйте тест-кейс
+    const item = { text: 'Some new post' };
+    const addedPost = postsService.create(item);
+    expect(addedPost.id).toBe('2');
+    expect(addedPost.text).toBe(item.text);
+    expect(addedPost.date).toBeDefined();
+    expect(Number.isNaN(Date.parse(addedPost.date))).toBe(false);
   });
 
   it('should find a post', () => {
-    // реализуйте тест-кейс
+    const preExisting = postsService.find('1');
+    expect(preExisting).toBeDefined();
+    expect(preExisting?.text).toBe('Some pre-existing post');
+
+    const created = postsService.create({ text: 'Another post' });
+    const found = postsService.find(created.id);
+    expect(found).toEqual(created);
+
+    expect(postsService.find('999')).toBeUndefined();
   });
 });
